@@ -10,3 +10,8 @@ Git파일 Commiit하는 순서
 5. mkdir github
 6. git status 
 7. git add . 하위 폴더 전체 커밋설정
+8. git commit -m "제목"
+9. git log 로그 확인 
+10. git branch -M main 마스터에서 메인으로 변경 
+11. git remote add origin https://github.com/seonhongmun/Oz_08.git  업로드 
+12. git push -u origin main  신뢰설정 
