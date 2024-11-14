@@ -1,14 +1,14 @@
 ### Day 1
 
 Git파일 Commiit하는 순서
-1. git init
-2. git config --list
+1. git init   폴더 초기화 
+2. git config --list  깃 설정 확인 (이름, 이메일 주소 확인)
 3. git config 설정 
   - git config user.name "seonhongmun" ""안에 이름
   - git config user.email "mshg_@navercom" ""안에 이메일
 4. git config --list 설정 리스트 확인 
-5. mkdir github
-6. git status 
+5. mkdir github 폴더 만들기
+6. git status 현재 상황 확인 
 7. git add . 하위 폴더 전체 커밋설정
 8. git commit -m "제목"
 9. git log 로그 확인
