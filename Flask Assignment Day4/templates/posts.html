@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Blog Posts</title>
+  <!-- axios 라이브러리 로드 -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <h1>Blog Posts</h1>
+
+  <section>
+    <h2>Create / Update a Post</h2>
+    <!-- 게시글 작성 및 수정 폼 -->
+    <form id="postForm">
+      <!-- 수정 시 사용할 게시글 ID 저장 (현재 사용되지 않으므로 생략 가능) -->
+      <input type="hidden" id="postId" />
+      <label>
+        Title:
+        <input type="text" id="title" required />
+      </label><br/>
+      <label>
+        Content:<br/>
+        <textarea id="content" required></textarea>
+      </label><br/>
+      <button type="submit">Save Post</button>
+    </form>
+  </section>
+
+  <hr />
+
+  <section>
+    <h2>All Posts</h2>
+    <!-- 게시글 목록 표시 -->
+    <ul id="postsList"></ul>
+  </section>
+
+  <script>
+    // 현재 편집 중인 게시글 ID 저장 변수
+    let currentEditingId = null;
+
+    // 폼 제출 시 처리
+    document.getElementById("postForm").addEventListener("submit", function(e) {
+      e.preventDefault(); // 페이지 리로드 방지
+      const title = document.getElementById("title").value;
+      const content = document.getElementById("content").value;
+
+      // 편집 중인 게시글이 있으면 업데이트, 없으면 새 게시글 생성
+      if (currentEditingId) {
+        updatePost(currentEditingId, title, content);
+      } else {
+        createPost({ title, content });
+      }
+    });
+
+    // 새 게시글 생성 함수
+    function createPost(data) {
+      axios.post("/posts", data)
+        .then(handleResponse)
+        .catch(console.error);
+    }
+
+    // 게시글 수정 함수
+    function updatePost(id, title, content) {
+      axios.put(`/posts/${id}`, { title, content })
+        .then(handleResponse)
+        .catch(console.error);
+    }
+
+    // 응답 후 처리: 목록 재로드 및 폼 초기화
+    function handleResponse(response) {
+      console.log(response);
+      loadPosts();
+      resetForm();
+    }
+
+    // 모든 게시글 불러오기
+    function loadPosts() {
+      axios.get("/posts")
+        .then(response => {
+          const postsList = document.getElementById("postsList");
+          postsList.innerHTML = "";  // 기존 목록 초기화
+          // 최신 게시글이 먼저 나오도록 reverse() 사용
+          response.data.reverse().forEach(post => {
+            const listItem = document.createElement("li");
+            listItem.innerHTML = `
+              <h3>ID: ${post.id}</h3>
+              <h3>Title: ${post.title}</h3>
+              <p>Content: ${post.content}</p>
+              <button onclick="deletePost(${post.id})">Delete</button>
+              <button onclick="loadPostForEditing(${post.id})">Edit</button>
+            `;
+            postsList.appendChild(listItem);
+          });
+        })
+        .catch(console.error);
+    }
+
+    // 특정 게시글 데이터를 불러와 편집 준비
+    function loadPostForEditing(id) {
+      axios.get(`/posts/${id}`)
+        .then(response => {
+          const post = response.data;
+          currentEditingId = post.id;
+          document.getElementById("title").value = post.title;
+          document.getElementById("content").value = post.content;
+        })
+        .catch(console.error);
+    }
+
+    // 폼 및 편집 상태 초기화
+    function resetForm() {
+      currentEditingId = null;
+      document.getElementById("title").value = "";
+      document.getElementById("content").value = "";
+    }
+
+    // 게시글 삭제 함수
+    function deletePost(id) {
+      if (!confirm("이 게시글을 삭제 하시겠습니까?")) return;
+      axios.delete(`/posts/${id}`)
+        .then(response => {
+          console.log(response);
+          loadPosts();  // 삭제 후 목록 새로 고침
+        })
+        .catch(console.error);
+    }
+
+    // 페이지 로드시 게시글 목록 로드
+    loadPosts();
+  </script>
+</body>
+</html>
