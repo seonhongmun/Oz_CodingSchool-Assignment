@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Todolist</title>
+</head>
+<body>
+<nav style="display:flex; justify-content: space-between">
+    <div>
+        <a style="font-size:20px" href={% url 'todo:list' %}>홈</a>
+    </div>
+    {% if request.user.is_authenticated %}
+        <div style="text-align:right; font-size: 20px; display:flex; justify-content: space-between">
+        {{ request.user.username }}
+        <form action="{% url 'logout' %}" method="POST">
+            {% csrf_token %}
+            <button style="border: 0; font-size: 20px; cursor:pointer">로그아웃</button>
+        </form>
+        </div>
+    {% else %}
+        <div style="display:flex; justify-content: right; font-size: 20px;">
+            <a href="{% url 'signup' %}" style="margin-right:10px">회원가입</a>
+            <a href="{% url 'login' %}">로그인</a>
+        </div>
+    {% endif %}
+</nav>
+{% block content %}{% endblock %}
+<footer>
+
+</footer>
+{% block js %}{% endblock %}
+</body>
+</html>
