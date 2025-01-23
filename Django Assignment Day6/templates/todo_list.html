@@ -1,0 +1,150 @@
+{% extends 'base.html' %} <!-- base.html 파일을 확장하여 기본 레이아웃을 사용함 -->
+{% block content %} <!-- content 블록 시작 -->
+<style> <!-- 내부 스타일 정의 시작 -->
+    body { /* 페이지 전체의 기본 스타일 */
+        font-family: Arial, sans-serif; /* 폰트 지정 */
+        background-color: #f4f4f4; /* 배경색 지정 */
+        margin: 0; /* 기본 여백 제거 */
+        padding: 20px; /* 전체 여백 지정 */
+    }
+    .container { /* 메인 컨테이너 스타일 */
+        max-width: 600px; /* 최대 너비를 600px로 제한 */
+        margin: auto; /* 가로 방향으로 중앙 정렬 */
+        background: #fff; /* 흰색 배경 적용 */
+        padding: 20px; /* 내부 여백 20px */
+        border-radius: 10px; /* 모서리를 둥글게 만듦 */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 미세한 그림자 효과 */
+    }
+    h1 { /* 제목(h1) 스타일 */
+        text-align: center; /* 텍스트를 중앙 정렬 */
+        color: #333; /* 글자색을 진한 회색으로 지정 */
+    }
+    ul { /* 목록 스타일 */
+        list-style-type: none; /* 기본 불릿(bullet) 제거 */
+        padding: 0; /* 목록 패딩 제거 */
+    }
+    li { /* 목록 항목(li) 스타일 */
+        padding: 10px; /* 내부 여백 10px */
+        margin: 5px 0; /* 항목 간 간격 5px */
+        background: #eaeaea; /* 회색 배경 */
+        border-radius: 5px; /* 모서리 둥글게 */
+        transition: background 0.3s; /* 배경 전환 시 부드럽게 처리 */
+    }
+    li:hover { /* 마우스를 올렸을 때 효과 */
+        background: #d4d4d4; /* 조금 더 진한 회색 배경 */
+    }
+    a { /* 앵커(링크) 태그 스타일 */
+        text-decoration: none; /* 밑줄 제거 */
+        color: #333; /* 진한 회색 텍스트 */
+    }
+    /* 생성 버튼 스타일 */
+    .create-button { /* '생성하기' 버튼의 CSS 클래스 */
+        background-color: #007bff; /* 파란색 배경 */
+        color: white; /* 흰색 텍스트 */
+        border: none; /* 테두리 제거 */
+        margin-top: 20px; /* 위쪽 여백 20px */
+        padding: 10px 20px; /* 내부 여백 상하 10px, 좌우 20px */
+        border-radius: 4px; /* 모서리를 둥글게 */
+        cursor: pointer; /* 마우스 포인터를 손모양으로 변경 */
+        width: 20%; /* 버튼 너비 20% */
+        height: 20%; /* 버튼 높이 20% */
+        font-size: 16px; /* 폰트 크기 16px */
+    }
+    .create-button:hover { /* 마우스를 올렸을 때 버튼 색상 변화 */
+        background-color: #0056b3; /* 더 진한 파란색 */
+    }
+    /* 페이지네이션 스타일 */
+    .pagination { /* 페이지네이션 전체 컨테이너 */
+        display: flex; /* 가로 정렬 */
+        justify-content: center; /* 중앙 정렬 */
+        margin-top: 20px; /* 위쪽 여백 20px */
+    }
+    .pagination a,
+    .pagination span { /* 페이지네이션 내의 링크와 span 요소 */
+        color: #007bff; /* 파란색 텍스트 */
+        padding: 8px 16px; /* 내부 여백 상하 8px, 좌우 16px */
+        text-decoration: none; /* 밑줄 제거 */
+        transition: background-color .3s; /* 배경 전환 시 부드럽게 처리 */
+    }
+    .pagination p { /* 페이지네이션 내부의 p 태그 */
+        color: gray; /* 회색 텍스트 */
+        padding: 8px 16px; /* 내부 여백 상하 8px, 좌우 16px */
+        text-decoration: none; /* 밑줄 제거 */
+        transition: background-color .3s; /* 배경 전환 시 부드럽게 처리 */
+        margin: 0; /* 기본 마진 제거 */
+    }
+    .pagination p:hover { /* p 태그에 마우스를 올렸을 때 */
+        background-color: #ddd; /* 연한 회색 배경 */
+        border-radius: 5px; /* 모서리를 둥글게 */
+        cursor: not-allowed; /* 사용 불가 커서 표시 */
+    }
+    .pagination a.active { /* 현재 페이지를 나타내는 링크 */
+        background-color: #007bff; /* 파란색 배경 */
+        color: white; /* 흰색 텍스트 */
+        border-radius: 5px; /* 모서리를 둥글게 */
+    }
+    .pagination a:hover:not(.active) { /* 활성 페이지가 아닌 링크에 마우스를 올렸을 때 */
+        background-color: #ddd; /* 연한 회색 배경 */
+        border-radius: 5px; /* 모서리를 둥글게 */
+    }
+    /* 입력 필드 스타일 */
+    input[type="text"] {
+        width: 50%; /* 가로 너비 50% */
+        padding: 10px; /* 내부 여백 10px */
+        border: 1px solid #ddd; /* 연한 회색 테두리 */
+        border-radius: 4px; /* 모서리를 둥글게 */
+        margin-bottom: 0px; /* 아래쪽 마진 0 */
+    }
+    /* 검색 버튼 스타일 */
+    .search-button {
+        background-color: #007bff; /* 파란색 배경 */
+        color: white; /* 흰색 텍스트 */
+        border: none; /* 테두리 제거 */
+        padding: 10px 20px; /* 내부 여백 상하 10px, 좌우 20px */
+        border-radius: 4px; /* 모서리를 둥글게 */
+        cursor: pointer; /* 마우스 포인터 손모양 */
+        font-size: 16px; /* 폰트 크기 16px */
+    }
+    .search-button:hover { /* 마우스를 올렸을 때 색상 변화 */
+        background-color: #0056b3; /* 더 진한 파란색 */
+    }
+</style> <!-- 내부 스타일 정의 종료 -->
+
+<div class="container mt-lg-5"> <!-- 메인 컨테이너 시작 -->
+    {% if request.user.is_authenticated %} <!-- 사용자 인증 상태를 확인 -->
+        <div class="d-flex justify-content-between align-items-center mb-3"> <!-- 상단 영역(타이틀 + 버튼) -->
+            {% if not request.user.is_staff %} <!-- 일반 사용자일 경우 -->
+                <h1>{{ request.user.username }}'s Todo List</h1> <!-- 사용자명 + Todo List 제목 표시 -->
+            {% else %} <!-- 관리자(staff)일 경우 -->
+                <h1>All To Do List (By. Admin)</h1> <!-- 전체 목록 표시 -->
+            {% endif %}
+            <button class="btn btn-success" onclick="location.href='{% url 'todo:create' %}'">생성하기</button> <!-- 할 일 생성 페이지 이동 버튼 -->
+        </div>
+        <form method="GET" class="mb-3"> <!-- 검색 폼 시작 -->
+            <div class="input-group"> <!-- 검색 영역 그룹화 -->
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="제목 또는 내용을 입력하세요."
+                  name="q"
+                  value="{% if request.GET.q %}{{ request.GET.q }}{% endif %}"> <!-- 검색어 입력 필드 -->
+                <button class="btn btn-sm btn-primary" type="submit">Search</button> <!-- 검색 버튼 -->
+            </div>
+        </form>
+        <hr> <!-- 구분선 -->
+
+        <ul class="list-unstyled"> <!-- 할 일 목록을 표시할 ul 태그 -->
+            {% for todo in page_obj.object_list %} <!-- 페이징된 할 일 객체 반복 -->
+                <li class="todo-list-item">
+                    <a href="{% url 'todo:info' todo.id %}">
+                        [{{ todo.user.username }}] {{ todo.title }}
+                    </a>
+                </li> <!-- 할 일 목록 항목 -->
+            {% endfor %}
+        </ul>
+        <hr> <!-- 구분선 -->
+
+        {% include 'pagination.html' %} <!-- 페이지네이션 템플릿 포함 -->
+    {% endif %}
+</div> <!-- 메인 컨테이너 종료 -->
+{% endblock %} <!-- content 블록 종료 -->
